@@ -3,48 +3,83 @@ variable "env" {
   type = string
 }
 
-variable "lambda_name" {
-  description = "Name of the lambda function"
+variable s3_raw_bucket_name {
+  description = "Name of the raw S3 bucket"
   type = string
 }
 
-variable "lambda_path" {
-  description = "Path where the lambda code is"
+variable s3_raw_bucket_versioning {
+  description = "Bucket versioning flag for S3"
   type = string
 }
 
-variable "lambda_runtime" {
-  description = "Language used by the lambda function"
-  type = string
-  default = "python3.9"
-}
-
-variable "root_path" {
-  description = "Path where the lambda code is"
+variable s3_transformed_bucket_name {
+  description = "Name of the transformed S3 bucket"
   type = string
 }
 
-variable "memory_size" {
-  description = "Memory size (MB) for the Lambda function"
+variable s3_transformed_bucket_versioning {
+  description = "Bucket versioning flag for S3"
   type = string
 }
 
-variable "timeout" {
-  description = "Number of seconds after which the lambda times out"
+variable scraper_lambda_name {
+  description = "Name of scraper lambda function"
+  type = string
+}
+
+variable scraper_lambda_path {
+  description = "Path of the lambda scraper"
+  type = string
+}
+
+variable scraper_lambda_root_path {
+  description = "Path of where all the lambda code is stored"
+  type = string
+}
+
+variable scraper_lambda_runtime {
+  description = "Language used for the lambda function"
+  type = string
+}
+
+variable scraper_lambda_memory_size {
+  description = "Lambda memory size"
   type = number
 }
 
-variable "log_retention_days" {
-  description = "Number of days to retain the logs in cloudwatch"
+variable scraper_lambda_timeout {
+  description = "Lambda timeout in seconds"
   type = number
 }
 
-variable "env_vars" {
-  description = "Environment variables to be passed to the Lambda function"
+variable scraper_lambda_log_retention {
+  description = "Lambda log retention in days"
+  type = number
+}
+
+variable scraper_lambda_env_vars {
+  description = "Lambda environment variables"
   type = map(string)
 }
 
-variable "tags" {
-  description = "Tags used by Terraform"
+variable scraper_lambda_trigger_cron {
+  description = "Lambda cron trigger"
+  type = string
+}
+
+variable scraper_lambda_trigger_count {
+  description = "Number of triggers - this needs to be equal to the elements in the trigger events"
+  type = number
+}
+
+variable scraper_lambda_trigger_events {
+  description = "Events on lambda trigger"
+  type = list(map(string))
+}
+
+variable tags {
+  description = "Events on lambda trigger"
   type = map(string)
 }
+
