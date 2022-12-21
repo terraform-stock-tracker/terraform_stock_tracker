@@ -1,0 +1,9 @@
+.terraform/*
+.terraform
+.idea
+non-prod/.terraform
+prd/.terraform
+provider.tf
+.cache
+.tmp
+.terragrunt-cache
