@@ -78,6 +78,56 @@ variable scraper_lambda_trigger_events {
   type = list(map(string))
 }
 
+variable transform_lambda_name {
+  description = "Name of scraper lambda function"
+  type = string
+}
+
+variable transform_lambda_path {
+  description = "Path of the lambda scraper"
+  type = string
+}
+
+variable transform_lambda_root_path {
+  description = "Path of where all the lambda code is stored"
+  type = string
+}
+
+variable transform_lambda_runtime {
+  description = "Language used for the lambda function"
+  type = string
+}
+
+variable transform_lambda_memory_size {
+  description = "Lambda memory size"
+  type = number
+}
+
+variable transform_lambda_timeout {
+  description = "Lambda timeout in seconds"
+  type = number
+}
+
+variable transform_lambda_log_retention {
+  description = "Lambda log retention in days"
+  type = number
+}
+
+variable transform_lambda_env_vars {
+  description = "Lambda environment variables"
+  type = map(string)
+}
+
+variable transform_lambda_trigger_prefix {
+  description = "Filter prefix on s3 trigger"
+  type = string
+}
+
+variable transform_lambda_trigger_suffix {
+  description = "Filter suffix on s3 trigger"
+  type = string
+}
+
 variable tags {
   description = "Events on lambda trigger"
   type = map(string)
