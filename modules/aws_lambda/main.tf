@@ -121,7 +121,7 @@ resource "aws_lambda_function" "lambda_function" {
 }
 
 #################################################################
-######### Cloudwatch Logs #######################################
+######### Cloudwatch Policy #####################################
 #################################################################
 
 # Create a log group and specify the retention period
@@ -160,6 +160,10 @@ resource "aws_iam_role_policy_attachment" "function_logging_policy_attachment" {
 }
 
 
+#################################################################
+######### SNS Policy ############################################
+#################################################################
+
 # Create an alerting policy
 resource "aws_iam_policy" "function_alerting_policy" {
   name   = var.iam_alerting_policy_name
@@ -182,4 +186,34 @@ resource "aws_iam_role_policy_attachment" "function_alerting_policy_attachment" 
   count               = var.sns_alert_enabled
   role                = aws_iam_role.lambda_iam.id
   policy_arn          = aws_iam_policy.function_alerting_policy.arn
+}
+
+
+#################################################################
+######### S3 Policy #############################################
+#################################################################
+
+# Create an alerting policy
+resource "aws_iam_policy" "function_s3_policy" {
+  name   = var.iam_s3_policy_name
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        Action : var.iam_s3_actions,
+        Effect : "Allow",
+        Resource : [
+          "arn:aws:s3:::${var.bucket_id}",
+          "arn:aws:s3:::${var.bucket_id}/*",
+        ]
+      }
+    ]
+  })
+}
+
+# Attach the alerting policy to the function role to the IAM Role
+resource "aws_iam_role_policy_attachment" "function_s3_policy_attachment" {
+  count               = var.s3_policy_enabled
+  role                = aws_iam_role.lambda_iam.id
+  policy_arn          = aws_iam_policy.function_s3_policy.arn
 }

@@ -37,18 +37,23 @@ lambda = {
     root_path               = "lambda"
     memory_size             = "128"
     runtime                 = "python3.9"
-    timeout                 = 3
+    timeout                 = 10
     env_vars                = { env : "dev" }
     sns_alert_enabled       = 1
     iam                     = {
       role_name                 = "dev-stock-tracker-scraper-iam-role"
-      logging_policy_name       = "dev-stock-scraper-scraper-iam-logging-policy"
-      alerting_policy_name      = "dev-stock-scraper-scraper-iam-alerting-policy"
+      logging_policy_name       = "dev-stock-tracker-scraper-iam-logging-policy"
+      alerting_policy_name      = "dev-stock-tracker-scraper-iam-alerting-policy"
+      s3                        = {
+        role_name                 = "dev-stock-tracker-scraper-iam-s3-policy"
+        actions                   = ["s3:GetObject", "s3:PutObject", "s3:ListBucket"]
+        bucket_name               = "dev-stock-tracker-raw"
+      }
     }
     trigger = {
       cron = {
-        count                   = 2
-        events                  = [{ticker: "VUSA"}, {ticker: "NVDA"}]
+        count                   = 1
+        events                  = [{ticker: "VUSA", dry_run: false, bucket_name: "dev-stock-tracker-raw"}]
         schedule                = "cron(0 * * * ? *)"
       }
     }
@@ -66,8 +71,8 @@ lambda = {
     sns_alert_enabled       = 1
     iam                     = {
       role_name                 = "dev-stock-tracker-transform-iam-role"
-      logging_policy_name       = "dev-stock-scraper-transform-iam-logging-policy"
-      alerting_policy_name      = "dev-stock-scraper-transform-iam-alerting-policy"
+      logging_policy_name       = "dev-stock-tracker-transform-iam-logging-policy"
+      alerting_policy_name      = "dev-stock-tracker-transform-iam-alerting-policy"
     }
     trigger = {
       s3 = {

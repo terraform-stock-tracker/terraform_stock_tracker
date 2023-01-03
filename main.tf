@@ -49,6 +49,10 @@ module "scraper_lambda" {
   iam_logging_policy_name   = var.lambda.scraper.iam.logging_policy_name
   iam_alerting_policy_name  = var.lambda.scraper.iam.alerting_policy_name
   iam_role_name             = var.lambda.scraper.iam.role_name
+  s3_policy_enabled         = var.lambda.scraper.iam.s3 == null ? 0 : 1
+  iam_s3_policy_name        = var.lambda.scraper.iam.s3.role_name
+  bucket_id                 = var.lambda.scraper.iam.s3.bucket_name
+  iam_s3_actions            = var.lambda.scraper.iam.s3.actions
   sns_alert_enabled         = var.lambda.scraper.sns_alert_enabled
   sns_topic_name            = var.sns.topic_name
   tags                      = var.tags
@@ -80,6 +84,7 @@ module "transformer_lambda" {
   iam_logging_policy_name   = var.lambda.transform.iam.logging_policy_name
   iam_alerting_policy_name  = var.lambda.transform.iam.alerting_policy_name
   iam_role_name             = var.lambda.transform.iam.role_name
+  s3_policy_enabled         = var.lambda.scraper.iam.s3 == null ? 0 : 1
   sns_alert_enabled         = var.lambda.transform.sns_alert_enabled
   sns_topic_name            = var.sns.topic_name
   tags                      = var.tags

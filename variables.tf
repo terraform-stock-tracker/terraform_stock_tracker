@@ -44,6 +44,11 @@ variable lambda {
         role_name             = string
         logging_policy_name   = string
         alerting_policy_name  = string
+        s3                    = optional(object({
+          role_name             = string
+          bucket_name           = string
+          actions               = list(string)
+        }))
       })
       sns_alert_enabled = optional(number, 0)
       trigger = object({
@@ -72,9 +77,14 @@ variable lambda {
         role_name             = string
         logging_policy_name   = string
         alerting_policy_name  = string
+        s3                    = optional(object({
+          role_name             = string
+          bucket_name           = string
+          actions               = list(string)
+        }))
       })
       sns_alert_enabled = optional(number, 0)
-      trigger = object({
+      trigger = optional(object({
         cron = optional(object({
           count = optional(number, 0)
           events = optional(list(map(string)))
@@ -84,7 +94,7 @@ variable lambda {
           filter_prefix = optional(string)
           filter_suffix = optional(string)
         }))
-      })
+      }))
     })
 
   })

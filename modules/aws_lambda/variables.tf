@@ -76,3 +76,27 @@ variable "tags" {
   description = "Tags used by Terraform"
   type = map(string)
 }
+
+variable "s3_policy_enabled" {
+  description = "Enable policy to access S3"
+  type = number
+  default = 0
+}
+
+variable "bucket_id" {
+  description = "Name of the bucket for the policy"
+  type = string
+  default = ""
+}
+
+variable "iam_s3_policy_name" {
+  description = "Name of the policy for S3"
+  type = string
+  default = "remove-me"
+}
+
+variable "iam_s3_actions" {
+  description = "Actions for the IAM policy to access S3"
+  type = list(string)
+  default = ["s3:ListBucket"]
+}
