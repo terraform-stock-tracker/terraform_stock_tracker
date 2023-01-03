@@ -44,6 +44,34 @@ variable "env_vars" {
   type = map(string)
 }
 
+variable "iam_role_name" {
+  description = "Name for the iam_role"
+  type = string
+}
+
+variable "iam_logging_policy_name" {
+  description = "Name for the iam policy for cloudwatch logs"
+  type = string
+}
+
+variable "sns_alert_enabled" {
+  description = "Enable policy to send messages to SNS"
+  type = number
+  default = 0
+}
+
+variable "iam_alerting_policy_name" {
+  description = "Name for the iam policy for sns topic"
+  type = string
+  default = ""
+}
+
+variable "sns_topic_name" {
+  description = "Name for topic name"
+  type = string
+  default = ""
+}
+
 variable "tags" {
   description = "Tags used by Terraform"
   type = map(string)

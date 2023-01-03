@@ -2,7 +2,7 @@
 ######### Lambda Packaging ######################################
 #################################################################
 locals {
-  lambda_bundle_path = "${var.root_path}/.tmp"
+  lambda_bundle_path = "${var.root_path}/.tmp/${var.lambda_name}"
 }
 
 # Compute the source code hash, only taking into
@@ -20,6 +20,17 @@ resource "random_uuid" "lambda_src_hash" {
 }
 
 
+# Remove all the files existent from previous builds
+resource "null_resource" "remove_old_builds" {
+  provisioner "local-exec" {
+    command = "rm -rf ${local.lambda_bundle_path}"
+  }
+  triggers = {
+    source_code_hash = random_uuid.lambda_src_hash.result
+  }
+}
+
+
 # Create temporary folder for where all the dependencies will be stored into
 # Copy all the files from the lambda path into this folder.
 resource "null_resource" "make_bundle_folder" {
@@ -29,6 +40,7 @@ resource "null_resource" "make_bundle_folder" {
   triggers = {
     source_code_hash = random_uuid.lambda_src_hash.result
   }
+  depends_on = [null_resource.remove_old_builds]
 }
 
 # Automatically install dependencies to be packaged
@@ -69,9 +81,8 @@ data "archive_file" "lambda_source_package" {
 #################################################################
 
 resource "aws_iam_role" "lambda_iam" {
-  name = "iam_for_lambda"
-
-  assume_role_policy = jsonencode({
+  name                = var.iam_role_name
+  assume_role_policy  = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
       {
@@ -83,8 +94,7 @@ resource "aws_iam_role" "lambda_iam" {
       }
     ]
   })
-
-  tags              = var.tags
+  tags                = var.tags
 }
 
 
@@ -126,7 +136,7 @@ resource "aws_cloudwatch_log_group" "function_log_group" {
 
 # Create a logging policy
 resource "aws_iam_policy" "function_logging_policy" {
-  name   = "function-logging-policy"
+  name   = var.iam_logging_policy_name
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -147,4 +157,29 @@ resource "aws_iam_policy" "function_logging_policy" {
 resource "aws_iam_role_policy_attachment" "function_logging_policy_attachment" {
   role                = aws_iam_role.lambda_iam.id
   policy_arn          = aws_iam_policy.function_logging_policy.arn
+}
+
+
+# Create an alerting policy
+resource "aws_iam_policy" "function_alerting_policy" {
+  name   = var.iam_alerting_policy_name
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        Action : [
+          "sns:Publish",
+        ],
+        Effect : "Allow",
+        Resource : "arn:aws:sns:*:*:${var.sns_topic_name}"
+      }
+    ]
+  })
+}
+
+# Attach the alerting policy to the function role to the IAM Role
+resource "aws_iam_role_policy_attachment" "function_alerting_policy_attachment" {
+  count               = var.sns_alert_enabled
+  role                = aws_iam_role.lambda_iam.id
+  policy_arn          = aws_iam_policy.function_alerting_policy.arn
 }

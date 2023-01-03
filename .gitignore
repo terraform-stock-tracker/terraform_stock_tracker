@@ -7,3 +7,9 @@ provider.tf
 .cache
 .tmp
 .terragrunt-cache
+*/__pycache__/*
+__pycache__
+__pycache/*
+*/__pycache__
+*__pycache__
+lambda/scraper/src/__pycache__/
